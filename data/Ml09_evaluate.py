@@ -7,7 +7,8 @@ os.makedirs("figures", exist_ok=True)
 
 print(df.sort_values("MAE").to_string(index=False))
 
-df.plot(x="Model", y=["MAE", "RMSE"], kind="bar", figsize=(9, 5))
+ax=df.plot(x="Model",y=["MAE","RMSE"],kind="bar",figsize=(9,5))
+for c in ax.containers:ax.bar_label(c,fmt="%.0f")
 plt.title("Model Performance Comparison")
 plt.ylabel("Error")
 plt.xticks(rotation=0)
