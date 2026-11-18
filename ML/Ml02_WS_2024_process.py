@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import re
 url="data/raw/Women_Safety_NCRB_2024_Data.xlsx"
 year="2024"
 output_folder="data/processed"
@@ -22,10 +23,10 @@ for sheet in xls.sheet_names:
     #TOTAL rows are summaries and would be counted as extra states in modelling
     first_col=df.columns[0]
     df=df[~df[first_col].astype(str).str.upper().str.startswith("TOTAL")]
-    #sheets like State_Overview_2022_24 only contain "24", so the last two digits of the year are checked
+    #sheets like State_Overview_2022_24 only contain "24", so the year is matched as a whole number: 2024 or 24
     #sheets with no year in the name (rape tables) get the year added to avoid overwriting the 2023 files
     name=sheet.lower()
-    if year[-2:] not in name:
+    if not re.search(r"(?<!\d)(%s|%s)(?!\d)"%(year,year[-2:]),name):
         name=name+"_"+year
     df.to_csv(os.path.join(output_folder,name+".csv"),index=False)
     print(sheet,"→",df.shape)
